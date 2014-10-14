@@ -113,6 +113,7 @@
 (global-set-key (kbd "C-c d") 'delete-trailing-whitespace)
 (global-set-key (kbd "C-c r") 'replace-string)
 (global-set-key (kbd "C-c e") 'eval-buffer)
+(global-set-key (kbd "C-c h") 'helm-mini)
 (global-set-key (kbd "M-`") 'other-frame)
 (global-set-key (kbd "M-~") 'prev-frame)
 
