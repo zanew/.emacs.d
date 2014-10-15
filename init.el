@@ -92,6 +92,7 @@
 (global-set-key (kbd "C-c C-x") 'nxml-mode)
 (global-set-key (kbd "C-c C-y") 'yas/minor-mode)
 (global-set-key (kbd "C-c c") 'auto-complete-mode)
+(global-set-key (kdb "C-c g") 'helm-do-grep)
 
 ;;; German Language Settings
 ;; (message "German langauge settings ...")
