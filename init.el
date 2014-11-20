@@ -5,7 +5,9 @@
 (message "started loading settings ...")
 
 (setq custom-basedir (expand-file-name "~/.emacs.d/site-lisp"))
+(setq solorized-theme (expand-file-name "~/.emacs.d/emacs-color-theme-solarized"))
 (add-to-list 'load-path custom-basedir)
+(add-to-list 'custom-theme-load-path solorized-theme)
 
 (defun add-path (p)
   (add-to-list 'load-path (concat custom-basedir p)))
@@ -55,7 +57,7 @@
 
 ;;; Settings Theme
 (message "applying theme settings ...")
-(load-theme 'misterioso t)
+(load-theme 'solarized-dark t)
 
 ;;; Save minibuffer history between sessions
 (savehist-mode 1)
