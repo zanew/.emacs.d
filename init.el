@@ -100,10 +100,10 @@
 ;; (set-terminal-coding-system 'iso-latin-1)
 
 ;;;MODE HOOKS
-(defun my-major-mode-hook ()
-  (column-enforce-mode))
+;;(defun my-major-mode-hook ()
+;;  (column-enforce-mode))
 
-(add-hook 'after-change-major-mode-hook 'my-major-mode-hook)
+;;(add-hook 'after-change-major-mode-hook 'my-major-mode-hook)
 
 ;; to switch to the previous frame
 (defun prev-frame ()
@@ -124,13 +124,16 @@
 ;;; TRAMP stuff
 (setq tramp-default-method "ssh")
 
-;;; Helm mode remaps
+;;; Helm mode
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x b") 'helm-mini)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
+
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
+(helm-mode 1)
 
 (when (executable-find "curl")
   (setq helm-google-suggest-use-curl-p t))
@@ -142,6 +145,8 @@
       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
       helm-ff-file-name-history-use-recentf t)
+
+
 
 ;;; Package Repositories
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
