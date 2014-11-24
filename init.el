@@ -53,7 +53,7 @@
 
 ;;; Settings Theme
 (message "applying theme settings ...")
-(load-theme 'misterioso t)
+(load-theme 'solarized-dark t)
 
 ;;; Save minibuffer history between sessions
 (savehist-mode 1)
