@@ -2,18 +2,16 @@
 ;;; Zane Whitney's Emacs Settings
 ;;;(using some parts of Jeff Dlouhy's .emacs file: https://github.com/jeffd)
 
-(message "started loading settings ...")
+;;; Force Package loading on init
+(package-initialize)
 
 (setq custom-basedir (expand-file-name "~/.emacs.d/site-lisp"))
-(setq solorized-theme (expand-file-name "~/.emacs.d/emacs-color-theme-solarized"))
 (add-to-list 'load-path custom-basedir)
-(add-to-list 'custom-theme-load-path solorized-theme)
 
 (defun add-path (p)
   (add-to-list 'load-path (concat custom-basedir p)))
 
 (add-to-list 'exec-path "/usr/local/bin")
-(add-to-list 'exec-path "/Applications/Adobe Flash Builder 4/sdks/4.0.0/bin")
 
 ;;; LAYOUT
 
@@ -30,16 +28,14 @@
 ;;; Locate command uses Spotlight Search
 (setq locate-command "/usr/bin/mdfind")
 
-;;; I condem thee to Hell!
-;;(global-set-key (kbd "C-x C-c") nil)
-
 (setq-default tab-width 2)
 (setq-default indent-tabs-mode nil)
 
 ;;; Smooth Scrolling
-(message "applying scrolling settings ...")
+;; (message "applying scrolling settings ...")
 (setq scroll-step 1
-      scroll-conservatively 10000)
+      scroll-conservatively 10000
+      auto-window-vscroll nil)
 
 ;;; Scrolling
 (global-set-key [C-next] 'scroll-other-window)
@@ -57,7 +53,7 @@
 
 ;;; Settings Theme
 (message "applying theme settings ...")
-(load-theme 'solarized-dark t)
+(load-theme 'misterioso t)
 
 ;;; Save minibuffer history between sessions
 (savehist-mode 1)
@@ -68,7 +64,6 @@
 (setq-default show-trailing-whitespace t)
 (setq-default transient-mark-mode t)
 (setq default-truncate-lines t)
-
 
 ;;; Shell Settings
 (message "applying shell settings ...")
@@ -96,21 +91,27 @@
 (global-set-key (kbd "C-c c") 'auto-complete-mode)
 (global-set-key (kbd "C-c g") 'helm-do-grep)
 
-;;; German Language Settings
-;; (message "German langauge settings ...")
-;; (set-language-environment 'german)
-;; (set-terminal-coding-system 'iso-latin-1)
-
 ;;;MODE HOOKS
-;;(defun my-major-mode-hook ()
-;;  (column-enforce-mode))
+(defun my-major-mode-hook ()
+ (column-enforce-mode))
 
-;;(add-hook 'after-change-major-mode-hook 'my-major-mode-hook)
+(add-hook 'after-change-major-mode-hook 'my-major-mode-hook)
+
+;;;Global Nyan-mode
+(define-globalized-minor-mode my-global-nyan-mode nyan-mode
+ (lambda () (nyan-mode 1)))
+
+(my-global-nyan-mode 1)
 
 ;; to switch to the previous frame
 (defun prev-frame ()
   (interactive)
   (other-frame -1))
+
+;;; Package Repositories
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 ;;; Other Bindings
 (global-set-key (kbd "C-c d") 'delete-trailing-whitespace)
@@ -131,38 +132,26 @@
 (global-set-key (kbd "C-x b") 'helm-mini)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+;;; Because helm autoloads things
+(with-eval-after-load
+    'abcd-mode
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 
-(helm-mode 1)
+  (helm-mode 1)
 
-(when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
+  (when (executable-find "curl")
+    (setq helm-google-suggest-use-curl-p t))
 
-(setq helm-quick-update                     t ; do not display invisible candidates
-      helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-      helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
-      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-      helm-ff-file-name-history-use-recentf t)
-
-
-
-;;; Package Repositories
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
-
-;;;EXTENSIONS
-
-;;; LANGUAGE MODES
-
-;;; Flyspell Mode
-(autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
-(autoload 'flyspell-delay-command "flyspell" "Delay on command." t)
-(autoload 'tex-mode-flyspell-verify "flyspell" "" t)
+  (setq helm-quick-update                     t ; do not display invisible candidates
+        helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+        helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
+        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+        helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+        helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+        helm-ff-file-name-history-use-recentf t)
+  )
 
 ;;; Objective-C Settings
 (message "applying Xcode settings ...")
@@ -237,3 +226,17 @@
           "osascript -e 'tell application \"Xcode\" to build project 1'")
          (shell-command
           "osascript -e 'tell application \"Xcode\" to launch project 1'"))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
