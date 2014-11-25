@@ -2,6 +2,26 @@
 ;;; Zane Whitney's Emacs Settings
 ;;;(using some parts of Jeff Dlouhy's .emacs file: https://github.com/jeffd)
 
+(defun load-graphical-settings ()
+
+  ;;;Global Nyan-mode
+  (define-globalized-minor-mode my-global-nyan-mode nyan-mode
+    (lambda () (nyan-mode 1)))
+
+  (my-global-nyan-mode 1)
+
+  ;;; Settings Theme
+  (load-theme 'solarized-dark t))
+
+(defun load-terminal-settings ()
+  ;;; Settings Theme
+  (load-theme 'misterioso t)
+)
+
+(if (display-graphic-p)
+    (load-graphical-settings)
+     (load-terminal-settings))
+
 ;;; Force Package loading on init
 (package-initialize)
 
@@ -51,9 +71,7 @@
 (cond ((getenv "SSH_CONNECTION")
        (define-key key-translation-map [?\C-h] [?\C-?])))
 
-;;; Settings Theme
-(message "applying theme settings ...")
-(load-theme 'solarized-dark t)
+
 
 ;;; Save minibuffer history between sessions
 (savehist-mode 1)
@@ -97,11 +115,7 @@
 
 (add-hook 'after-change-major-mode-hook 'my-major-mode-hook)
 
-;;;Global Nyan-mode
-(define-globalized-minor-mode my-global-nyan-mode nyan-mode
- (lambda () (nyan-mode 1)))
 
-(my-global-nyan-mode 1)
 
 ;; to switch to the previous frame
 (defun prev-frame ()
@@ -133,25 +147,27 @@
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 
 ;;; Because helm autoloads things
-(with-eval-after-load
-    'abcd-mode
-  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
-  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+;; with-eval-after-load not in 24.3
+(if (not (string-match-p "24.3" (emacs-version)))
+    (with-eval-after-load
+        'abcd-mode
+      (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
+      (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+      (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 
-  (helm-mode 1)
+      (helm-mode 1)
 
-  (when (executable-find "curl")
-    (setq helm-google-suggest-use-curl-p t))
+      (when (executable-find "curl")
+        (setq helm-google-suggest-use-curl-p t))
 
-  (setq helm-quick-update                     t ; do not display invisible candidates
-        helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-        helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
-        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-        helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-        helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-        helm-ff-file-name-history-use-recentf t)
-  )
+      (setq helm-quick-update                     t ; do not display invisible candidates
+            helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+            helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
+            helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+            helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+            helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+            helm-ff-file-name-history-use-recentf t)
+      ))
 
 ;;; Objective-C Settings
 (message "applying Xcode settings ...")
