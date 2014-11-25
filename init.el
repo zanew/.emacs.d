@@ -2,6 +2,9 @@
 ;;; Zane Whitney's Emacs Settings
 ;;;(using some parts of Jeff Dlouhy's .emacs file: https://github.com/jeffd)
 
+;;; Force Package loading on init
+(package-initialize)
+
 (defun load-graphical-settings ()
 
   ;;;Global Nyan-mode
@@ -22,8 +25,6 @@
     (load-graphical-settings)
      (load-terminal-settings))
 
-;;; Force Package loading on init
-(package-initialize)
 
 (setq custom-basedir (expand-file-name "~/.emacs.d/site-lisp"))
 (add-to-list 'load-path custom-basedir)
